@@ -1,0 +1,13 @@
+# Agent registry. This file lists agents available to `larp --agent <id>`.
+# Agent directories are named after their IDs and must be direct children of agents/.
+# IDs must contain 1-64 ASCII letters, digits, '_' or '-'. IDs must be unique.
+# `default_agent` must refer to one of the listed IDs.
+
+# Agent selected when --agent is not provided.
+default_agent = "default"
+
+[[agents]]
+# Stable ID and directory name: agents/default/.
+id = "default"
+# Human-readable name shown by `larp agents list`.
+name = "Default"

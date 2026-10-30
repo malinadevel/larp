@@ -1,0 +1,52 @@
+# Command-tool manifest. Access, approval, and environment are configured separately in
+# security.toml. Unknown manifest fields are rejected.
+#
+# Fields:
+# - id: unique tool ID, 1-64 ASCII letters, digits, '_' or '-'. It is also the function name
+#   shown to the model and must match a section in security.toml.
+# - version: any non-empty string (not parsed as a semantic version).
+# - description: non-empty text shown to the model.
+# - program: existing executable path, absolute or relative to this manifest file.
+# - timeout_ms: timeout in milliseconds, integer from 1 to 300000, inclusive.
+# - max_output_bytes: retained byte limit for stdout and stderr separately,
+#   integer from 1 to 1000000, inclusive.
+# - argv (optional): process arguments. Each item must specify exactly one of
+#   { literal = "fixed argument" } or { from = "input_field" }.
+#   A from value must name a required input_schema property and is passed as one argument,
+#   without shell interpolation.
+# - stdin_from (optional): name of a required string property to send to stdin.
+# - approval_required (legacy, optional boolean): accepted but ignored; configure approval
+#   in security.toml instead.
+# - input_schema: supported subset of JSON Schema. type must be "object". Properties support
+#   "string", "integer", "number" or "boolean"; each property requires type and may have
+#   description. required lists required property names. additionalProperties is true or false
+#   and defaults to false when omitted.
+# argv mappings may refer only to declared required properties with supported scalar types.
+#
+# This example runs cat directly, not through a shell. It can access files with the current
+# user's permissions; approval settings do not provide OS-level sandboxing.
+
+# Tool ID; its access rule is [tools.read_file] in security.toml.
+id = "read_file"
+version = "1"
+description = "Read a text file and return its contents"
+# Must exist and be executable.
+program = "/usr/bin/cat"
+# Process timeout, milliseconds (1..=300000).
+timeout_ms = 30000
+# Retained output limit per stream, bytes (1..=1000000).
+max_output_bytes = 16000
+# Pass --, then the required path field as a single argument.
+argv = [{ literal = "--" }, { from = "path" }]
+
+[input_schema]
+type = "object"
+required = ["path"]
+# Whether undeclared input fields are accepted. true or false; here they are rejected.
+additionalProperties = false
+
+[input_schema.properties.path]
+# Supported property types: "string", "integer", "number" or "boolean".
+type = "string"
+# Optional description shown to the model.
+description = "Path to the text file"

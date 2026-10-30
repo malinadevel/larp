@@ -1,0 +1,32 @@
+# Tool access and process-environment policy for this agent. Unknown fields are rejected.
+#
+# Each rule supports:
+# - enabled: true advertises the tool to the model and allows execution; false disables it.
+# - approval: "always" asks the user before every execution; "never" skips confirmation.
+#   Use "never" only as an explicit trust decision.
+# - environment (optional): "clean" clears the process environment and sets a restricted PATH;
+#   "inherit" passes the application's environment, which may contain secrets.
+# If environment is omitted, bash defaults to "inherit" and other tools default to "clean".
+# [defaults] applies to tools without a matching [tools.<tool_id>] section.
+
+[defaults]
+# true or false. Tools without a specific rule are enabled in this template.
+enabled = true
+# Allowed values: "always" or "never".
+approval = "always"
+# Allowed values: "clean" or "inherit".
+environment = "clean"
+
+# Section name must match id in tools/bash.toml.
+[tools.bash]
+enabled = true
+approval = "always"
+# Bash inherits the application's environment. Commands run with the current user's privileges;
+# this is not an OS sandbox.
+environment = "inherit"
+
+# Section name must match id in tools/read_file.toml.
+[tools.read_file]
+enabled = true
+approval = "always"
+environment = "clean"

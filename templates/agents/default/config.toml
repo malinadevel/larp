@@ -1,0 +1,19 @@
+# Model and agent-loop settings. Do not put the API key itself in this file.
+# All fields below are required except [prompt], whose mode defaults to "merge".
+
+# Provider model ID. Any non-empty string supported by the endpoint is accepted.
+model = "z-ai/glm-5.3-flash"
+# Full compatible Chat Completions endpoint. Must start with http:// or https://.
+endpoint = "https://openrouter.ai/api/v1/chat/completions"
+# Name of the environment variable containing the API key. The variable must be set and non-empty.
+api_key_env = "TEST_API_KEY"
+# Maximum tool-call rounds per agent run. Integer from 1 to 100, inclusive.
+max_tool_rounds = 8
+
+[prompt]
+# How to compose the prompt:
+# - "global": use only ~/.larp/SYSTEM_PROMPT.md.
+# - "agent": use only this agent's AGENT_PROMPT.md.
+# - "merge": append this agent's prompt after the global prompt.
+# Allowed values are exactly "global", "agent" and "merge". Default: "merge".
+mode = "merge"
